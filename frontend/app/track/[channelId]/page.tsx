@@ -62,17 +62,17 @@ const PLATFORM_CONFIG = {
     accent2: "#1d9bf0",
     icon: "𝕏",
     iconBg: "#111",
-    accountName: "@yourxaccount",
+    accountName: "@marketing_blinx",
     bio: "Xで毎日ためになる情報をポスト中🔥\nフォローお待ちしています！",
     tags: ["#X", "#毎日ポスト", "#有益情報"],
     posts: ["ポスト 2,341", "フォロワー 9,800", "フォロー中 512"],
-    codeNote: "フォロー後、固定ポストにリプライ",
+    codeNote: "①フォロー → ②下のボタンでポスト",
     steps: (code: string) => [
-      "Xアカウントをフォロー",
-      `固定ポストに「${code}」をリプライ`,
+      "X (@marketing_blinx) をフォロー",
+      `「ポストして確認」ボタンを押す（コード「${code}」が自動入力されます）`,
     ],
     btnText: "X をフォローする",
-    url: "https://www.x.com",
+    url: "https://x.com/marketing_blinx",
   },
 };
 
@@ -190,6 +190,25 @@ export default async function TrackPage({
         >
           {c.btnText}
         </a>
+
+        {/* X専用: フォロー確認ポストボタン */}
+        {data.platform === "x" && (
+          <a
+            href={`https://x.com/intent/tweet?text=${encodeURIComponent(`@marketing_blinx ${data.code}`)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: "block", padding: "16px",
+              background: "#1d9bf0",
+              color: "#fff",
+              textAlign: "center", borderRadius: "12px",
+              textDecoration: "none", fontWeight: "800", fontSize: "16px",
+              marginTop: "12px",
+            }}
+          >
+            ポストして確認する
+          </a>
+        )}
 
         <p style={{ color: "#222", fontSize: "11px", marginTop: "24px", textAlign: "center" }}>
           {data.session_id}
