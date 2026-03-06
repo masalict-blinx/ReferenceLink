@@ -7,7 +7,7 @@ X (Twitter) フォロー確認ポーラー
 
 import re
 import logging
-from datetime import datetime, timezone
+from datetime import datetime
 
 import tweepy
 from sqlalchemy import select
@@ -118,7 +118,7 @@ async def _process_mention(db: AsyncSession, client: tweepy.Client, my_id: int, 
                 continue
 
             session.status = "FOLLOW_VERIFIED"
-            session.verified_at = datetime.now(timezone.utc)
+            session.verified_at = datetime.utcnow()
             session.platform_user_id = str(tweet.author_id)
             logger.info(f"[X Poller] フォロー確認: code={code} user={tweet.author_id}")
         else:
