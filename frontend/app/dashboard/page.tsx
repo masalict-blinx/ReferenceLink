@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import QRCell from "./components/QRCell";
 
 type Row = {
@@ -9,25 +12,35 @@ type Row = {
   cvr: number;
 };
 
-async function getStats(): Promise<Row[]> {
-  try {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
-    const res = await fetch(`${apiUrl}/track/dashboard/stats`, { cache: "no-store" });
-    if (!res.ok) return [];
-    return res.json();
-  } catch {
-    return [];
-  }
-}
-
 const PLATFORM_LABEL: Record<string, { label: string; color: string }> = {
   tiktok:    { label: "TikTok",    color: "#FE2C55" },
   instagram: { label: "Instagram", color: "#E1306C" },
   x:         { label: "X",         color: "#1d9bf0" },
 };
 
-export default async function DashboardPage() {
-  const rows = await getStats();
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+const POLL_INTERVAL = 30_000; // 30秒
+
+export default function DashboardPage() {
+  const [rows, setRows] = useState<Row[]>([]);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+
+  const fetchStats = async () => {
+    try {
+      const res = await fetch(`${API_URL}/track/dashboard/stats`, { cache: "no-store" });
+      if (!res.ok) return;
+      setRows(await res.json());
+      setLastUpdated(new Date());
+    } catch {
+      // silently ignore
+    }
+  };
+
+  useEffect(() => {
+    fetchStats();
+    const timer = setInterval(fetchStats, POLL_INTERVAL);
+    return () => clearInterval(timer);
+  }, []);
 
   const platforms = ["tiktok", "instagram", "x"];
 
@@ -35,11 +48,18 @@ export default async function DashboardPage() {
     <main style={{ background: "#0a0a0a", minHeight: "100vh", padding: "40px 24px", fontFamily: "'Helvetica Neue', 'Hiragino Sans', sans-serif", color: "#fff" }}>
       <div style={{ maxWidth: "860px", margin: "0 auto" }}>
 
-        <h1 style={{ fontSize: "20px", fontWeight: "800", marginBottom: "8px" }}>
-          フォロワー流入 ダッシュボード
-        </h1>
+        <div style={{ display: "flex", alignItems: "baseline", gap: "16px", marginBottom: "8px" }}>
+          <h1 style={{ fontSize: "20px", fontWeight: "800", margin: 0 }}>
+            フォロワー流入 ダッシュボード
+          </h1>
+          {lastUpdated && (
+            <span style={{ fontSize: "11px", color: "#444" }}>
+              最終更新: {lastUpdated.toLocaleTimeString("ja-JP")}
+            </span>
+          )}
+        </div>
         <p style={{ color: "#555", fontSize: "13px", marginBottom: "40px" }}>
-          チャネル別クリック数・フォロー確認数・CVR
+          チャネル別クリック数・フォロー確認数・CVR（30秒ごと自動更新）
         </p>
 
         {platforms.map((platform) => {
@@ -51,7 +71,6 @@ export default async function DashboardPage() {
 
           return (
             <section key={platform} style={{ marginBottom: "48px" }}>
-              {/* セクションヘッダー */}
               <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
                 <h2 style={{ fontSize: "15px", fontWeight: "800", color, margin: 0 }}>{label}</h2>
                 <div style={{ display: "flex", gap: "16px", marginLeft: "auto" }}>
@@ -61,7 +80,6 @@ export default async function DashboardPage() {
                 </div>
               </div>
 
-              {/* テーブル */}
               <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "14px" }}>
                 <thead>
                   <tr style={{ borderBottom: "1px solid #1a1a1a" }}>
