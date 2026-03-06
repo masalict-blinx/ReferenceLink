@@ -4,6 +4,7 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     DATABASE_URL: str = "postgresql+asyncpg://user:password@localhost:5432/follower_tracker"
     APP_BASE_URL: str = "http://localhost:8000"
+    FRONTEND_URL: str = "http://localhost:3000"
 
     TIKTOK_CLIENT_KEY: str = ""
     TIKTOK_CLIENT_SECRET: str = ""

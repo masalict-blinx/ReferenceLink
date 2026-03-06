@@ -66,7 +66,7 @@ async def get_qr(channel_id: str, db: AsyncSession = Depends(get_db)):
     if not channel:
         raise HTTPException(status_code=404, detail="Channel not found")
 
-    url = f"{settings.APP_BASE_URL.replace('8000', '3000')}/track/{channel_id}"
+    url = f"{settings.FRONTEND_URL}/track/{channel_id}"
     img = qrcode.make(url)
     buf = io.BytesIO()
     img.save(buf, format="PNG")
