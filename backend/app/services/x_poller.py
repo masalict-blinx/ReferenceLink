@@ -35,6 +35,20 @@ def get_x_client() -> tweepy.Client:
     )
 
 
+def _is_following(client: tweepy.Client, my_id: int, author_id: int) -> bool:
+    """author_id が自分（my_id）をフォローしているか確認"""
+    try:
+        # author_id のフォロー中リストに my_id が含まれるか確認
+        resp = client.get_users_following(id=author_id, max_results=1000)
+        if not resp.data:
+            return False
+        return any(u.id == my_id for u in resp.data)
+    except Exception as e:
+        logger.warning(f"[X Poller] フォロー確認APIエラー (user={author_id}): {e}")
+        # API失敗時はメンションのみで確認済みとみなす
+        return True
+
+
 async def poll_x_mentions():
     global _last_mention_id
 
@@ -51,9 +65,11 @@ async def poll_x_mentions():
             logger.error("[X Poller] 自分のアカウント情報が取得できません")
             return
 
+        my_id = me.data.id
+
         # メンション取得（最新20件）
         kwargs = dict(
-            id=me.data.id,
+            id=my_id,
             max_results=20,
             tweet_fields=["author_id", "text", "created_at"],
         )
@@ -71,7 +87,7 @@ async def poll_x_mentions():
 
         async with AsyncSessionLocal() as db:
             for tweet in mentions.data:
-                await _process_mention(db, tweet)
+                await _process_mention(db, client, my_id, tweet)
             await db.commit()
 
         logger.info(f"[X Poller] {len(mentions.data)}件のメンションを処理しました")
@@ -80,7 +96,7 @@ async def poll_x_mentions():
         logger.error(f"[X Poller] エラー: {e}")
 
 
-async def _process_mention(db: AsyncSession, tweet):
+async def _process_mention(db: AsyncSession, client: tweepy.Client, my_id: int, tweet):
     """1件のメンションからコードを抽出してDBを更新"""
     text = tweet.text
     codes = CODE_PATTERN.findall(text)
@@ -96,6 +112,11 @@ async def _process_mention(db: AsyncSession, tweet):
         session = result.scalar_one_or_none()
 
         if session:
+            # フォロー状態を確認
+            if not _is_following(client, my_id, tweet.author_id):
+                logger.info(f"[X Poller] フォロー未確認のためスキップ: code={code} user={tweet.author_id}")
+                continue
+
             session.status = "FOLLOW_VERIFIED"
             session.verified_at = datetime.now(timezone.utc)
             session.platform_user_id = str(tweet.author_id)
