@@ -13,7 +13,7 @@ export default function QRCell({ channelId, color, urlOverride, qrUrlOverride }:
       <div style={{ display: "flex", gap: "8px", justifyContent: "center" }}>
         <button
           onClick={() => setShowUrl(!showUrl)}
-          style={{ fontSize: "11px", color: "#555", background: "none", border: "1px solid #222", padding: "4px 8px", borderRadius: "4px", cursor: "pointer" }}
+          style={{ fontSize: "11px", color: "#555", background: "none", border: "1px solid #ccc", padding: "4px 8px", borderRadius: "4px", cursor: "pointer" }}
         >
           {showUrl ? "URL ▲" : "URL ▼"}
         </button>
@@ -26,8 +26,8 @@ export default function QRCell({ channelId, color, urlOverride, qrUrlOverride }:
       </div>
 
       {showUrl && (
-        <div style={{ marginTop: "8px", padding: "8px", background: "#111", borderRadius: "4px", wordBreak: "break-all" }}>
-          <span style={{ fontSize: "11px", color: "#aaa", fontFamily: "monospace" }}>{trackUrl}</span>
+        <div style={{ marginTop: "8px", padding: "8px", background: "#f5f5f5", borderRadius: "4px", wordBreak: "break-all" }}>
+          <span style={{ fontSize: "11px", color: "#555", fontFamily: "monospace" }}>{trackUrl}</span>
         </div>
       )}
 
@@ -42,7 +42,7 @@ export default function QRCell({ channelId, color, urlOverride, qrUrlOverride }:
           <a
             href={qrUrl}
             download={`qr-${channelId}.png`}
-            style={{ fontSize: "11px", color: "#888", textDecoration: "none", border: "1px solid #333", padding: "4px 10px", borderRadius: "4px" }}
+            style={{ fontSize: "11px", color: "#555", textDecoration: "none", border: "1px solid #ccc", padding: "4px 10px", borderRadius: "4px" }}
           >
             ダウンロード
           </a>

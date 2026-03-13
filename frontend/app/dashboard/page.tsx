@@ -59,7 +59,7 @@ export default function DashboardPage() {
   const platforms = ["tiktok", "instagram", "x"];
 
   return (
-    <main style={{ background: "#0a0a0a", minHeight: "100vh", padding: "40px 24px", fontFamily: "'Helvetica Neue', 'Hiragino Sans', sans-serif", color: "#fff" }}>
+    <main style={{ background: "#f8f8f8", minHeight: "100vh", padding: "40px 24px", fontFamily: "'Helvetica Neue', 'Hiragino Sans', sans-serif", color: "#111" }}>
       <div style={{ maxWidth: "860px", margin: "0 auto" }}>
 
         <div style={{ display: "flex", alignItems: "baseline", gap: "16px", marginBottom: "8px" }}>
@@ -87,14 +87,14 @@ export default function DashboardPage() {
               <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
                 <h2 style={{ fontSize: "15px", fontWeight: "800", color: lineColor, margin: 0 }}>LINE</h2>
                 <div style={{ display: "flex", gap: "16px", marginLeft: "auto" }}>
-                  <span style={{ fontSize: "12px", color: "#555" }}>合計クリック <strong style={{ color: "#fff" }}>{totalClicks}</strong></span>
-                  <span style={{ fontSize: "12px", color: "#555" }}>友だち追加 <strong style={{ color: "#fff" }}>{totalVerified}</strong></span>
+                  <span style={{ fontSize: "12px", color: "#555" }}>合計クリック <strong style={{ color: "#111" }}>{totalClicks}</strong></span>
+                  <span style={{ fontSize: "12px", color: "#555" }}>友だち追加 <strong style={{ color: "#111" }}>{totalVerified}</strong></span>
                   <span style={{ fontSize: "12px", color: "#555" }}>CVR <strong style={{ color: lineColor }}>{totalCvr}%</strong></span>
                 </div>
               </div>
               <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "14px" }}>
                 <thead>
-                  <tr style={{ borderBottom: "1px solid #1a1a1a" }}>
+                  <tr style={{ borderBottom: "1px solid #e5e5e5" }}>
                     <th style={th}>チャネルID</th>
                     <th style={th}>経路</th>
                     <th style={{ ...th, textAlign: "right" }}>クリック</th>
@@ -112,12 +112,12 @@ export default function DashboardPage() {
                     </tr>
                   ) : (
                     lineRows.map((r) => (
-                      <tr key={r.channel_id} style={{ borderBottom: "1px solid #111" }}>
-                        <td style={{ ...td, color: "#555", fontSize: "12px", fontFamily: "monospace" }}>{r.short_code}</td>
+                      <tr key={r.channel_id} style={{ borderBottom: "1px solid #f0f0f0" }}>
+                        <td style={{ ...td, color: "#888", fontSize: "12px", fontFamily: "monospace" }}>{r.short_code}</td>
                         <td style={td}>{r.channel_name}</td>
                         <td style={{ ...td, textAlign: "right" }}>{r.clicks}</td>
                         <td style={{ ...td, textAlign: "right" }}>{r.verified}</td>
-                        <td style={{ ...td, textAlign: "right", fontWeight: "bold", color: r.cvr >= 30 ? "#4ade80" : "#fff" }}>
+                        <td style={{ ...td, textAlign: "right", fontWeight: "bold", color: r.cvr >= 30 ? "#16a34a" : "#111" }}>
                           {r.cvr}%
                         </td>
                         <td style={{ ...td, textAlign: "center" }}>
@@ -149,15 +149,15 @@ export default function DashboardPage() {
               <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
                 <h2 style={{ fontSize: "15px", fontWeight: "800", color, margin: 0 }}>{label}</h2>
                 <div style={{ display: "flex", gap: "16px", marginLeft: "auto" }}>
-                  <span style={{ fontSize: "12px", color: "#555" }}>合計クリック <strong style={{ color: "#fff" }}>{totalClicks}</strong></span>
-                  <span style={{ fontSize: "12px", color: "#555" }}>フォロー確認 <strong style={{ color: "#fff" }}>{totalVerified}</strong></span>
+                  <span style={{ fontSize: "12px", color: "#555" }}>合計クリック <strong style={{ color: "#111" }}>{totalClicks}</strong></span>
+                  <span style={{ fontSize: "12px", color: "#555" }}>フォロー確認 <strong style={{ color: "#111" }}>{totalVerified}</strong></span>
                   <span style={{ fontSize: "12px", color: "#555" }}>CVR <strong style={{ color }}>{totalCvr}%</strong></span>
                 </div>
               </div>
 
               <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "14px" }}>
                 <thead>
-                  <tr style={{ borderBottom: "1px solid #1a1a1a" }}>
+                  <tr style={{ borderBottom: "1px solid #e5e5e5" }}>
                     <th style={th}>チャネルID</th>
                     <th style={th}>経路</th>
                     <th style={{ ...th, textAlign: "right" }}>クリック</th>
@@ -175,12 +175,12 @@ export default function DashboardPage() {
                     </tr>
                   ) : (
                     platformRows.map((r) => (
-                      <tr key={r.channel_id} style={{ borderBottom: "1px solid #111" }}>
-                        <td style={{ ...td, color: "#555", fontSize: "12px", fontFamily: "monospace" }}>{r.channel_id}</td>
+                      <tr key={r.channel_id} style={{ borderBottom: "1px solid #f0f0f0" }}>
+                        <td style={{ ...td, color: "#888", fontSize: "12px", fontFamily: "monospace" }}>{r.channel_id}</td>
                         <td style={td}>{r.channel_name}</td>
                         <td style={{ ...td, textAlign: "right" }}>{r.clicks}</td>
                         <td style={{ ...td, textAlign: "right" }}>{r.verified}</td>
-                        <td style={{ ...td, textAlign: "right", fontWeight: "bold", color: r.cvr >= 30 ? "#4ade80" : "#fff" }}>
+                        <td style={{ ...td, textAlign: "right", fontWeight: "bold", color: r.cvr >= 30 ? "#16a34a" : "#111" }}>
                           {r.cvr}%
                         </td>
                         <td style={{ ...td, textAlign: "center" }}>
@@ -209,5 +209,5 @@ const th: React.CSSProperties = {
 
 const td: React.CSSProperties = {
   padding: "12px",
-  color: "#ccc",
+  color: "#333",
 };

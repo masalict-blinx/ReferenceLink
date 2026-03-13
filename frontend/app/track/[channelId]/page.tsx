@@ -19,7 +19,7 @@ async function getTrackData(channelId: string): Promise<TrackData | null> {
 const PLATFORM_CONFIG = {
   tiktok: {
     name: "TikTok",
-    bg: "#010101",
+    bg: "#ffffff",
     accent: "#FE2C55",
     accent2: "#25F4EE",
     icon: "♪",
@@ -38,7 +38,7 @@ const PLATFORM_CONFIG = {
   },
   instagram: {
     name: "Instagram",
-    bg: "#0a0008",
+    bg: "#ffffff",
     accent: "#E1306C",
     accent2: "#833AB4",
     icon: "◎",
@@ -57,8 +57,8 @@ const PLATFORM_CONFIG = {
   },
   x: {
     name: "X",
-    bg: "#000000",
-    accent: "#ffffff",
+    bg: "#ffffff",
+    accent: "#111111",
     accent2: "#1d9bf0",
     icon: "𝕏",
     iconBg: "#111",
@@ -99,7 +99,7 @@ export default async function TrackPage({
       minHeight: "100vh",
       background: c.bg,
       fontFamily: "'Helvetica Neue', 'Hiragino Sans', sans-serif",
-      color: "#fff",
+      color: "#111",
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
@@ -129,7 +129,7 @@ export default async function TrackPage({
             ))}
           </div>
           {/* 統計 */}
-          <div style={{ display: "flex", justifyContent: "center", gap: "20px", borderTop: "1px solid #1a1a1a", borderBottom: "1px solid #1a1a1a", padding: "12px 0" }}>
+          <div style={{ display: "flex", justifyContent: "center", gap: "20px", borderTop: "1px solid #e5e5e5", borderBottom: "1px solid #e5e5e5", padding: "12px 0" }}>
             {c.posts.map(stat => (
               <p key={stat} style={{ color: "#666", fontSize: "12px", margin: 0 }}>{stat}</p>
             ))}
@@ -138,39 +138,38 @@ export default async function TrackPage({
 
         {/* コードボックス */}
         <div style={{
-          background: "#111",
-          border: `1px solid ${c.accent}`,
+          background: "#f8f8f8",
+          border: `2px solid ${c.accent}`,
           borderRadius: "16px",
           padding: "24px",
           textAlign: "center",
           marginBottom: "24px",
         }}>
-          <p style={{ color: "#555", fontSize: "11px", letterSpacing: "2px", marginBottom: "10px" }}>
+          <p style={{ color: "#888", fontSize: "11px", letterSpacing: "2px", marginBottom: "10px" }}>
             認証コード
           </p>
           <p style={{
             fontSize: "40px", fontWeight: "900", letterSpacing: "6px",
-            margin: "0 0 8px", color: "#fff",
-            textShadow: `0 0 20px ${c.accent}`,
+            margin: "0 0 8px", color: "#111",
           }}>
             {data.code}
           </p>
-          <p style={{ color: "#555", fontSize: "12px" }}>{c.codeNote}</p>
+          <p style={{ color: "#888", fontSize: "12px" }}>{c.codeNote}</p>
         </div>
 
         {/* ステップ */}
         <div style={{ marginBottom: "24px" }}>
           {c.steps(data.code).map((text, i) => (
-            <div key={i} style={{ display: "flex", gap: "12px", alignItems: "center", padding: "10px 0", borderBottom: "1px solid #1a1a1a" }}>
+            <div key={i} style={{ display: "flex", gap: "12px", alignItems: "center", padding: "10px 0", borderBottom: "1px solid #e5e5e5" }}>
               <div style={{
                 width: "24px", height: "24px", borderRadius: "50%",
-                background: c.accent, color: data.platform === "x" ? "#000" : "#fff",
+                background: c.accent, color: "#fff",
                 fontSize: "12px", fontWeight: "bold",
                 display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
               }}>
                 {i + 1}
               </div>
-              <p style={{ color: "#ccc", fontSize: "14px", margin: 0 }}>{text}</p>
+              <p style={{ color: "#444", fontSize: "14px", margin: 0 }}>{text}</p>
             </div>
           ))}
         </div>
@@ -183,7 +182,7 @@ export default async function TrackPage({
           style={{
             display: "block", padding: "16px",
             background: c.accent,
-            color: data.platform === "x" ? "#000" : "#fff",
+            color: "#fff",
             textAlign: "center", borderRadius: "12px",
             textDecoration: "none", fontWeight: "800", fontSize: "16px",
           }}
@@ -210,7 +209,7 @@ export default async function TrackPage({
           </a>
         )}
 
-        <p style={{ color: "#222", fontSize: "11px", marginTop: "24px", textAlign: "center" }}>
+        <p style={{ color: "#ddd", fontSize: "11px", marginTop: "24px", textAlign: "center" }}>
           {data.session_id}
         </p>
       </div>
