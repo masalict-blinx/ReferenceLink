@@ -5,10 +5,8 @@ import { useState } from "react";
 export default function QRCell({ channelId, color, urlOverride, qrUrlOverride }: { channelId: string; color: string; urlOverride?: string; qrUrlOverride?: string }) {
   const [showUrl, setShowUrl] = useState(false);
   const [showQr, setShowQr] = useState(false);
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
-  const trackUrl = urlOverride ?? `${appUrl}/track/${channelId}`;
-  const qrUrl = qrUrlOverride ?? `${apiUrl}/channels/${channelId}/qr`;
+  const trackUrl = urlOverride ?? `/track/${channelId}`;
+  const qrUrl = qrUrlOverride ?? `/api/channels/${channelId}/qr`;
 
   return (
     <div style={{ textAlign: "center" }}>

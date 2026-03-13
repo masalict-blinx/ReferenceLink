@@ -28,7 +28,7 @@ const PLATFORM_LABEL: Record<string, { label: string; color: string }> = {
   x:         { label: "X",         color: "#1d9bf0" },
 };
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+const API_URL = "";
 const POLL_INTERVAL = 30_000; // 30秒
 
 export default function DashboardPage() {

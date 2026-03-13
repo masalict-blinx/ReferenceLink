@@ -7,8 +7,8 @@ type TrackData = {
 
 async function getTrackData(channelId: string): Promise<TrackData | null> {
   try {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
-    const res = await fetch(`${apiUrl}/track/${channelId}`, { cache: "no-store" });
+    const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_URL ?? "http://localhost:3000";
+    const res = await fetch(`${baseUrl}/api/track/${channelId}`, { cache: "no-store" });
     if (!res.ok) return null;
     return res.json();
   } catch {

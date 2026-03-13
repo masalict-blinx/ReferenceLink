@@ -1,0 +1,13 @@
+{
+  "framework": "nextjs",
+  "crons": [
+    {
+      "path": "/api/cron/x-poller",
+      "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/cron/tiktok-poller",
+      "schedule": "*/5 * * * *"
+    }
+  ]
+}
