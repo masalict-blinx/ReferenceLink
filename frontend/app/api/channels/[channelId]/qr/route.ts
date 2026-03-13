@@ -19,7 +19,7 @@ export async function GET(
   const url = `${process.env.NEXT_PUBLIC_FRONTEND_URL ?? 'http://localhost:3000'}/track/${channelId}`
   const buffer = await QRCode.toBuffer(url, { type: 'png', width: 300 })
 
-  return new NextResponse(buffer, {
+  return new NextResponse(buffer as unknown as BodyInit, {
     headers: {
       'Content-Type': 'image/png',
       'Content-Disposition': `attachment; filename=qr-${channelId}.png`,
