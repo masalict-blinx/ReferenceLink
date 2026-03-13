@@ -33,6 +33,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:3000",
         "https://frontend-production-c3e3.up.railway.app",
+        "https://frontend-sable-six-luz2ph0zf4.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
