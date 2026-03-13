@@ -21,6 +21,9 @@ class Settings(BaseSettings):
     X_ACCESS_TOKEN_SECRET: str = ""
     X_BEARER_TOKEN: str = ""
 
+    LINE_SUPABASE_URL: str = "https://madurhckjgugykipdmed.supabase.co"
+    LINE_SUPABASE_SERVICE_ROLE_KEY: str = ""
+
     class Config:
         env_file = ".env"
 

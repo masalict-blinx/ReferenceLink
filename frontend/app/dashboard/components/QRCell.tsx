@@ -2,32 +2,38 @@
 
 import { useState } from "react";
 
-export default function QRCell({ channelId, color }: { channelId: string; color: string }) {
-  const [open, setOpen] = useState(false);
+export default function QRCell({ channelId, color, urlOverride, qrUrlOverride }: { channelId: string; color: string; urlOverride?: string; qrUrlOverride?: string }) {
+  const [showUrl, setShowUrl] = useState(false);
+  const [showQr, setShowQr] = useState(false);
   const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
-  const qrUrl = `${apiUrl}/channels/${channelId}/qr`;
+  const trackUrl = urlOverride ?? `${appUrl}/track/${channelId}`;
+  const qrUrl = qrUrlOverride ?? `${apiUrl}/channels/${channelId}/qr`;
 
   return (
     <div style={{ textAlign: "center" }}>
       <div style={{ display: "flex", gap: "8px", justifyContent: "center" }}>
-        <a
-          href={`${appUrl}/track/${channelId}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ fontSize: "11px", color: "#555", textDecoration: "none", border: "1px solid #222", padding: "4px 8px", borderRadius: "4px" }}
-        >
-          URL
-        </a>
         <button
-          onClick={() => setOpen(!open)}
+          onClick={() => setShowUrl(!showUrl)}
+          style={{ fontSize: "11px", color: "#555", background: "none", border: "1px solid #222", padding: "4px 8px", borderRadius: "4px", cursor: "pointer" }}
+        >
+          {showUrl ? "URL ▲" : "URL ▼"}
+        </button>
+        <button
+          onClick={() => setShowQr(!showQr)}
           style={{ fontSize: "11px", color, background: "none", border: `1px solid ${color}`, padding: "4px 8px", borderRadius: "4px", cursor: "pointer" }}
         >
-          {open ? "QR ▲" : "QR ▼"}
+          {showQr ? "QR ▲" : "QR ▼"}
         </button>
       </div>
 
-      {open && (
+      {showUrl && (
+        <div style={{ marginTop: "8px", padding: "8px", background: "#111", borderRadius: "4px", wordBreak: "break-all" }}>
+          <span style={{ fontSize: "11px", color: "#aaa", fontFamily: "monospace" }}>{trackUrl}</span>
+        </div>
+      )}
+
+      {showQr && (
         <div style={{ marginTop: "12px" }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img

@@ -1,5 +1,6 @@
 import random
 import string
+import httpx
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import RedirectResponse
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -8,6 +9,7 @@ from pydantic import BaseModel
 from app.database import get_db
 from app.models.channel import Channel
 from app.models.session import Session
+from app.config import settings
 
 router = APIRouter(prefix="/track", tags=["track"])
 
@@ -87,4 +89,40 @@ async def dashboard_stats(platform: str | None = None, db: AsyncSession = Depend
             cvr=round(r.verified / r.clicks * 100, 1) if r.clicks > 0 else 0.0,
         )
         for r in rows
+    ]
+
+
+class LineDashboardRow(BaseModel):
+    channel_id: str
+    channel_name: str
+    source: str
+    short_code: str
+    clicks: int
+    verified: int
+    cvr: float
+
+
+@router.get("/dashboard/line", response_model=list[LineDashboardRow])
+async def dashboard_line_stats():
+    url = f"{settings.LINE_SUPABASE_URL}/rest/v1/channel_summary?select=*"
+    headers = {
+        "apikey": settings.LINE_SUPABASE_SERVICE_ROLE_KEY,
+        "Authorization": f"Bearer {settings.LINE_SUPABASE_SERVICE_ROLE_KEY}",
+    }
+    async with httpx.AsyncClient() as client:
+        res = await client.get(url, headers=headers)
+    if res.status_code != 200:
+        raise HTTPException(status_code=502, detail="Failed to fetch LINE data")
+
+    return [
+        LineDashboardRow(
+            channel_id=str(r["id"]),
+            channel_name=r["name"],
+            source=r.get("source", ""),
+            short_code=r.get("short_code", ""),
+            clicks=r.get("click_count", 0),
+            verified=r.get("follow_count", 0),
+            cvr=float(r.get("cvr", 0)),
+        )
+        for r in res.json()
     ]

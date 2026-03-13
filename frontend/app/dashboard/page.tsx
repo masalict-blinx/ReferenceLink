@@ -12,6 +12,16 @@ type Row = {
   cvr: number;
 };
 
+type LineRow = {
+  channel_id: string;
+  channel_name: string;
+  source: string;
+  short_code: string;
+  clicks: number;
+  verified: number;
+  cvr: number;
+};
+
 const PLATFORM_LABEL: Record<string, { label: string; color: string }> = {
   tiktok:    { label: "TikTok",    color: "#FE2C55" },
   instagram: { label: "Instagram", color: "#E1306C" },
@@ -23,13 +33,17 @@ const POLL_INTERVAL = 30_000; // 30秒
 
 export default function DashboardPage() {
   const [rows, setRows] = useState<Row[]>([]);
+  const [lineRows, setLineRows] = useState<LineRow[]>([]);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
   const fetchStats = async () => {
     try {
-      const res = await fetch(`${API_URL}/track/dashboard/stats`, { cache: "no-store" });
-      if (!res.ok) return;
-      setRows(await res.json());
+      const [statsRes, lineRes] = await Promise.all([
+        fetch(`${API_URL}/track/dashboard/stats`, { cache: "no-store" }),
+        fetch(`${API_URL}/track/dashboard/line`, { cache: "no-store" }),
+      ]);
+      if (statsRes.ok) setRows(await statsRes.json());
+      if (lineRes.ok) setLineRows(await lineRes.json());
       setLastUpdated(new Date());
     } catch {
       // silently ignore
@@ -61,6 +75,67 @@ export default function DashboardPage() {
         <p style={{ color: "#555", fontSize: "13px", marginBottom: "40px" }}>
           チャネル別クリック数・フォロー確認数・CVR（30秒ごと自動更新）
         </p>
+
+        {/* LINE セクション */}
+        {(() => {
+          const lineColor = "#06C755";
+          const totalClicks = lineRows.reduce((s, r) => s + r.clicks, 0);
+          const totalVerified = lineRows.reduce((s, r) => s + r.verified, 0);
+          const totalCvr = totalClicks > 0 ? Math.round(totalVerified / totalClicks * 1000) / 10 : 0;
+          return (
+            <section style={{ marginBottom: "48px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
+                <h2 style={{ fontSize: "15px", fontWeight: "800", color: lineColor, margin: 0 }}>LINE</h2>
+                <div style={{ display: "flex", gap: "16px", marginLeft: "auto" }}>
+                  <span style={{ fontSize: "12px", color: "#555" }}>合計クリック <strong style={{ color: "#fff" }}>{totalClicks}</strong></span>
+                  <span style={{ fontSize: "12px", color: "#555" }}>友だち追加 <strong style={{ color: "#fff" }}>{totalVerified}</strong></span>
+                  <span style={{ fontSize: "12px", color: "#555" }}>CVR <strong style={{ color: lineColor }}>{totalCvr}%</strong></span>
+                </div>
+              </div>
+              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "14px" }}>
+                <thead>
+                  <tr style={{ borderBottom: "1px solid #1a1a1a" }}>
+                    <th style={th}>チャネルID</th>
+                    <th style={th}>経路</th>
+                    <th style={{ ...th, textAlign: "right" }}>クリック</th>
+                    <th style={{ ...th, textAlign: "right" }}>友だち追加</th>
+                    <th style={{ ...th, textAlign: "right" }}>CVR</th>
+                    <th style={{ ...th, textAlign: "center" }}>URL / QR</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {lineRows.length === 0 ? (
+                    <tr>
+                      <td colSpan={6} style={{ ...td, textAlign: "center", color: "#333", padding: "24px" }}>
+                        データなし
+                      </td>
+                    </tr>
+                  ) : (
+                    lineRows.map((r) => (
+                      <tr key={r.channel_id} style={{ borderBottom: "1px solid #111" }}>
+                        <td style={{ ...td, color: "#555", fontSize: "12px", fontFamily: "monospace" }}>{r.short_code}</td>
+                        <td style={td}>{r.channel_name}</td>
+                        <td style={{ ...td, textAlign: "right" }}>{r.clicks}</td>
+                        <td style={{ ...td, textAlign: "right" }}>{r.verified}</td>
+                        <td style={{ ...td, textAlign: "right", fontWeight: "bold", color: r.cvr >= 30 ? "#4ade80" : "#fff" }}>
+                          {r.cvr}%
+                        </td>
+                        <td style={{ ...td, textAlign: "center" }}>
+                          <QRCell
+                            channelId={r.short_code}
+                            color={lineColor}
+                            urlOverride={`https://line-tracker-rust.vercel.app/l/${r.short_code}`}
+                            qrUrlOverride={`https://line-tracker-rust.vercel.app/api/qr/${r.short_code}`}
+                          />
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </section>
+          );
+        })()}
 
         {platforms.map((platform) => {
           const platformRows = rows.filter((r) => r.platform === platform);
